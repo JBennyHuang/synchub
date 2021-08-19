@@ -12,7 +12,7 @@ import {
 
 import './App.css'
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 
 
@@ -26,8 +26,6 @@ const MonacoEditor = () => {
       setEditor(monaco.editor.create(editorRef.current, {
         value: "print('Hello World!')\nprint('Hello World!')\nprint('Hello World!')", language: "python", automaticLayout: true
       }))
-
-
     } else if (editor && firepad === null) {
       const db = firebase.database().ref().child('test')
 
