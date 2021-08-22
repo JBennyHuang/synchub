@@ -1,8 +1,8 @@
 import React from 'react';
 import * as monaco from "monaco-editor"
-import firebaseConfig from './firebase_configs';
-import firebase from 'firebase';
-import { fromMonaco } from "@hackerrank/firepad";
+import firebaseConfig from './firebase/firebase_configs'
+import firebase from 'firebase'
+import Firepad from 'firepad'
 
 import { Layout, Menu } from 'antd';
 import {
@@ -13,8 +13,6 @@ import {
 import './App.css'
 
 const { Sider, Content } = Layout;
-
-
 
 const MonacoEditor = () => {
   const editorRef = React.useRef()
@@ -27,13 +25,16 @@ const MonacoEditor = () => {
         value: "print('Hello World!')\nprint('Hello World!')\nprint('Hello World!')", language: "python", automaticLayout: true
       }))
     } else if (editor && firepad === null) {
-      const db = firebase.database().ref().child('test')
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      } else {
+        console.log(firebase.apps.length)
+        firebase.app();
+      }
 
-      setFirepad(fromMonaco(db, editor))
+      setFirepad(new Firepad.fromMonaco(firebase.database().ref('Benny').child('test'), editor))
     } else {
-      const name = prompt("Enter your name:")
 
-      firepad.setUserName(name)
 
       return () => { if (editor) editor.dispose(); if (firepad) firepad.dispose() }
     }
@@ -45,14 +46,6 @@ const MonacoEditor = () => {
 }
 
 function App() {
-  React.useEffect(() => {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    } else {
-      firebase.app();
-    }
-  })
-
   const [selected, setSelected] = React.useState("1")
   const [collapsed, setCollapsed] = React.useState(false)
 
@@ -70,7 +63,6 @@ function App() {
 
     }
   }
-
 
   return (
     <Layout style={{ height: "100vh" }} >
